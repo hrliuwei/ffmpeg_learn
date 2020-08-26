@@ -1,5 +1,8 @@
 #include "Peg.h"
 //#pragma warning(disable:4996)
+// namespace {
+// 	int decode_write_frame(const char* outfilename,)
+// }
 
 CPeg& CPeg::GetInstacen()
 {
@@ -24,25 +27,8 @@ void CPeg::Init()
 	avformat_network_init();
 	avdevice_register_all();
 	avcodec_register_all();
+	
 	av_log_set_level(AV_LOG_ERROR);
-
-// 	AVFormatContext* m_pFormatContext = avformat_alloc_context();
-// 	if (nullptr == m_pFormatContext) {
-// 		return;
-// 	}
-// 
-// 	AVDictionary * options = nullptr;
-// 	AVInputFormat * pInputFormat = av_find_input_format("dshow");
-// 	if (nullptr == pInputFormat) {
-// 		return;
-// 	}
-// 	int ret = avformat_open_input(&m_pFormatContext, "video=HD Pro Webcam C920", pInputFormat, &options);
-// 	if (0 != ret) {
-// 		char err[100] = {0};
-// 		av_strerror(ret,err, 100);
-// 		return;
-// 	}
-// 	OpenInput("");
 }
 
 int CPeg::OpenInput(std::string url)
@@ -160,4 +146,9 @@ int CPeg::WritePacket(std::shared_ptr<AVPacket> packet)
 	auto outputStream = outputContext->streams[packet->stream_index];
 	av_packet_rescale_ts(packet.get(), inputStream->time_base, outputStream->time_base);
 	return av_interleaved_write_frame(outputContext, packet.get());
+}
+
+void CPeg::ProcessImage(std::shared_ptr<AVPacket> packte)
+{
+	//av_decode_video
 }

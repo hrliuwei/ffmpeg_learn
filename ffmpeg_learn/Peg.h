@@ -34,6 +34,7 @@ public:
 	void CloseOutput();
 	std::shared_ptr<AVPacket> ReadPacketFromSource();
 	int WritePacket(std::shared_ptr<AVPacket> packet);
+	void ProcessImage(std::shared_ptr<AVPacket> packte);
 
 private:
 	AVFormatContext *inputContext = nullptr;

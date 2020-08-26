@@ -76,10 +76,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 Error:
 	peg.CloseInput();
 	peg.CloseOutput();
-	while (true)
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(100));
-	}
 	return 0;
 
     MSG msg;
