@@ -20,6 +20,7 @@ extern "C"
 #include "libavfilter/buffersrc.h"
 #include "libswscale/swscale.h"
 #include "libswresample/swresample.h"
+#include "libavdevice/avdevice.h"
 }
 class CPeg
 {

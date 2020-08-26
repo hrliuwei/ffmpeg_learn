@@ -45,26 +45,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	CPeg peg;
 	peg.Init();
-	int ret = peg.OpenInput("D:\\BaiduNetdiskDownload\\test.mp4");
+	int ret = peg.OpenInput("HD Pro Webcam C920");
 	if (ret >= 0){
 		ret = peg.OpenOutput("D:\\test\\learn.ts");
 	}
 	if (ret < 0){
 		goto Error;
 	}
-	while (true)
 	{
-		auto packet = peg.ReadPacketFromSource();
-		if (packet){
-			ret = peg.WritePacket(packet);
-			if (ret >=0 ){
-
+		int i = 0;
+		while (true)
+		{
+			i++;
+			auto packet = peg.ReadPacketFromSource();
+			if (packet) {
+				ret = peg.WritePacket(packet);
+				if (ret >= 0) {
+					if (i > 200) {
+						break;
+					}
+				}
+			}
+			else {
+				break;
 			}
 		}
-		else {
-			break;
-		}
 	}
+	
 
 Error:
 	peg.CloseInput();

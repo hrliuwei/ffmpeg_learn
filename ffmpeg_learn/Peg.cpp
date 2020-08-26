@@ -22,15 +22,45 @@ void CPeg::Init()
 	avcodec_register_all();
 	//avfilter_register_all();
 	avformat_network_init();
+	avdevice_register_all();
+	avcodec_register_all();
 	av_log_set_level(AV_LOG_ERROR);
+
+// 	AVFormatContext* m_pFormatContext = avformat_alloc_context();
+// 	if (nullptr == m_pFormatContext) {
+// 		return;
+// 	}
+// 
+// 	AVDictionary * options = nullptr;
+// 	AVInputFormat * pInputFormat = av_find_input_format("dshow");
+// 	if (nullptr == pInputFormat) {
+// 		return;
+// 	}
+// 	int ret = avformat_open_input(&m_pFormatContext, "video=HD Pro Webcam C920", pInputFormat, &options);
+// 	if (0 != ret) {
+// 		char err[100] = {0};
+// 		av_strerror(ret,err, 100);
+// 		return;
+// 	}
+// 	OpenInput("");
 }
 
 int CPeg::OpenInput(std::string url)
 {
+	
+	AVDictionary *format_opts = nullptr;
+	//av_dict_set_int(&format_opts, "rtbufsize", 3041280 * 10, 0);
+ 	av_dict_set(&format_opts, "avioflags", "direct", 0);
+ 	av_dict_set(&format_opts, "video_size", "960x720", 0);
+ 	av_dict_set(&format_opts, "framerate", "30", 0);
+ 	av_dict_set(&format_opts, "vcodec", "mjpeg", 0);
+	AVInputFormat *inputFormat = av_find_input_format("dshow");
+	std::string urlex = "video=" + url;
+
 	inputContext = avformat_alloc_context();
 	lastReadPacktTime = av_gettime();
 	inputContext->interrupt_callback.callback = interrupt_cb;
-	int ret = avformat_open_input(&inputContext, url.c_str(), nullptr, nullptr);
+	int ret = avformat_open_input(&inputContext, urlex.c_str(), inputFormat, &format_opts);
 	if (ret < 0){
 		av_log(NULL, AV_LOG_ERROR, "Input file open input failed\n");
 		return ret;
@@ -104,7 +134,7 @@ void CPeg::CloseOutput()
 
 std::shared_ptr<AVPacket> CPeg::ReadPacketFromSource()
 {
-	std::shared_ptr<AVPacket> packet(static_cast<AVPacket*>(av_malloc(sizeof(AVPacket))), [&](AVPacket* p) {av_packet_free(&p); av_free(&p); });
+	std::shared_ptr<AVPacket> packet(static_cast<AVPacket*>(av_malloc(sizeof(AVPacket))), [&](AVPacket* p) {av_packet_free(&p); av_free(p); });
 	av_init_packet(packet.get());
 	lastReadPacktTime = av_gettime();
 	int ret = av_read_frame(inputContext, packet.get());
